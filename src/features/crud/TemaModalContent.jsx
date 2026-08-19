@@ -115,7 +115,7 @@ export default function TemaModalContent({ editando, onSave }) {
       <label>Descrição</label>
       <input ref={descRef} defaultValue={editando ? editando.descricao || '' : ''} placeholder="Breve descrição do mundo" />
 
-      <label>Dificuldade sugerida (só informativa — o mundo fica liberado pra todo mundo jogar)</label>
+      <label>Cargo necessário pra liberar este mundo</label>
       <select ref={tierRef} defaultValue={unlockTier}>
         {RANKS.map(r => <option key={r.tier} value={r.tier}>{r.title}</option>)}
       </select>

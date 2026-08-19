@@ -212,7 +212,7 @@ export default function GamePage() {
 
   // ================= RENDER =================
   if (state.screen === 'setup') {
-    return <WorldSelectGrid temas={temas} requisitos={todosRequisitos} onSelect={startGame} />;
+    return <WorldSelectGrid temas={temas} requisitos={todosRequisitos} onSelect={startGame} tier={tier} />;
   }
 
   if (state.screen === 'over') {
