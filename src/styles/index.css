@@ -375,6 +375,14 @@ body[data-dark="true"] .btn-secondary:hover { filter: brightness(1.2); }
 .profile-info-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); }
 .profile-info-row svg { color: var(--text-muted); flex-shrink: 0; }
 .profile-info-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.profile-logout-btn {
+  display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%;
+  padding: 8px 12px; font-size: 13px; font-weight: 600; border-radius: 8px; border: none;
+  background: transparent; color: var(--text-muted); cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+.profile-logout-btn:hover { background: var(--bg); color: var(--danger); }
+.profile-logout-btn:active { transform: scale(.97); }
 
 /* ---------- WELCOME OVERLAY ---------- */
 .welcome-overlay {
@@ -522,30 +530,34 @@ body[data-dark="true"] .btn-secondary:hover { filter: brightness(1.2); }
 body[data-dark="true"] .badge-tile:not(.locked) .badge-status { background: #14532d; color: #bbf7d0; }
 
 /* ---------- THEME SELECTION ---------- */
-.theme-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; }
+.theme-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; }
 .theme-card {
-  position: relative; overflow: hidden; border-radius: var(--radius); padding: 20px;
-  cursor: pointer; text-align: center; color: #fff; min-height: 150px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  position: relative; overflow: hidden; border-radius: var(--radius); padding: 28px;
+  cursor: pointer; text-align: center; color: #fff; min-height: 220px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
   transition: transform .12s ease, box-shadow .12s ease;
   box-shadow: var(--shadow);
 }
 .theme-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(0,0,0,.2); }
 .theme-card.has-preview { background-size: cover; transition: transform .12s ease, box-shadow .12s ease, background-size .3s ease; }
 .theme-card.has-preview:hover { background-size: 112%; }
-.theme-card img { width: 44px; height: 44px; object-fit: contain; filter: brightness(0) invert(1); }
-.theme-card h4 { margin: 4px 0 0; font-family: var(--font-title); font-size: 16px; }
-.theme-card p { font-size: 12px; margin: 0; opacity: .9; }
-.theme-card.locked {
-  background: var(--bg) !important; color: var(--text-muted);
-  border: 1px dashed var(--border); cursor: not-allowed; box-shadow: none;
+.theme-card img { width: 56px; height: 56px; object-fit: contain; filter: brightness(0) invert(1); }
+.theme-card h4 { margin: 4px 0 0; font-family: var(--font-title); font-size: 19px; }
+.theme-card p { font-size: 13px; margin: 0; opacity: .9; }
+.theme-card.locked { cursor: not-allowed; }
+.theme-card.locked::after {
+  content: ''; position: absolute; inset: 0; background: rgba(10,12,25,.55); z-index: 1;
 }
-.theme-card.locked:hover { transform: none; box-shadow: none; }
-.theme-card.locked .lock-icon {
-  width: 44px; height: 44px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center; color: var(--text-muted);
+.theme-card.locked:hover { transform: none; box-shadow: var(--shadow); }
+.theme-card.locked.has-preview:hover { background-size: cover; }
+.theme-card.locked > *:not(.theme-card-lock-badge) { position: relative; z-index: 0; opacity: .55; }
+.theme-card-lock-badge {
+  position: relative; z-index: 2; display: flex; align-items: center; gap: 6px;
+  background: rgba(17,24,39,.85); color: #fff; border: 1px solid rgba(255,255,255,.25);
+  border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 600;
+  order: -1; margin-bottom: 4px;
 }
-.theme-card.locked p { opacity: 1; }
+.theme-card-lock-badge svg { flex-shrink: 0; }
 
 /* ---------- JOGO ---------- */
 .game-screen {
@@ -841,7 +853,7 @@ canvas#evolution-chart { width: 100%; }
   /* imagem sem a barra de apoio — as mãos ficam bem na borda do painel,
      metade pra fora, metade pra dentro (mesmo tratamento do sticker de
      Cargos). Fixo, sem animação, como pedido. */
-  position: absolute; top: -5px; right: 30px; width: 96px; z-index: 6;
+  position: absolute; top: 52px; right: 30px; width: 96px; z-index: 6;
   filter: drop-shadow(0 8px 14px rgba(17,24,39,.22));
   pointer-events: none;
 }
@@ -859,16 +871,19 @@ canvas#evolution-chart { width: 100%; }
 .cargos-mascot-sticker {
   /* nova pose (mão apoiada na borda) — mesmo tratamento do de Guia, sem
      precisar de rotação porque ele já "abraça" a borda naturalmente. */
-  position: absolute; top: -5px; right: 28px; width: 84px; z-index: 3;
+  position: absolute; top: 5px; right: -10px; width: 85px; z-index: 3;
   filter: drop-shadow(0 8px 14px rgba(17,24,39,.22));
   pointer-events: none;
 }
 @media (max-width: 640px) { .cargos-mascot-sticker { display: none; } }
-
+.cargos-intro-panel .section-intro,
+.guia-intro-panel .section-intro {
+  padding-right: 100px;
+}
 /* Reqi debruçado (variação) no topo do painel de Conquistas, no Relatórios */
 .relatorios-conquistas-panel { position: relative; overflow: visible; }
 .relatorios-mascot-peek {
-  position: absolute; right: 20px; bottom: 100%; width: 150px; max-width: 20%; z-index: 3;
+  position: absolute; right: 30px; bottom: 100%; width: 150px; max-width: 20%; z-index: 3;
   transform: translateY(9%); filter: drop-shadow(0 8px 14px rgba(17,24,39,.2));
   pointer-events: none; top: -98px;
 }
@@ -920,6 +935,18 @@ canvas#evolution-chart { width: 100%; }
 .cargo-world-chip.locked .powerup-icon-wrap { filter: grayscale(1) opacity(.55); }
 .cargo-world-chip.locked { color: var(--text-muted); }
 .cargo-worlds-empty { font-size: 12px; color: var(--text-muted); font-style: italic; }
+.cargo-unlock-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+.cargo-unlock-label {
+  font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;
+  letter-spacing: .03em;
+}
+.cargo-unlock-chip {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px 4px 4px;
+}
+.cargo-unlock-chip img { width: 20px; height: 20px; object-fit: contain; border-radius: 50%; background: var(--card-bg); padding: 3px; }
+.cargo-unlock-chip.locked { opacity: .6; }
+.cargo-unlock-chip.locked img { filter: grayscale(1); }
 
 /* Telas médias (tablet / janela de laptop mais estreita): sidebar vira
    só ícones automaticamente, sem precisar clicar em recolher. */

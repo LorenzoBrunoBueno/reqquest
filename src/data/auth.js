@@ -44,7 +44,8 @@ export function logout() {
  * restaurar a sessão quando o app carrega. Retorna null se não houver token
  * ou se o token salvo não for mais válido (backend fora do ar, expirado etc). */
 export async function fetchUsuarioAtual() {
-  if (!getToken()) return null;
+  const token = getToken();
+  if (!token) return null;
   try {
     return await apiFetch('/usuarios/me', { auth: true });
   } catch {

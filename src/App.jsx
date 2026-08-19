@@ -13,10 +13,12 @@ import RequisitosPage from './pages/RequisitosPage';
 import RelatoriosPage from './pages/RelatoriosPage';
 import CargosPage from './pages/CargosPage';
 import GuiaPage from './pages/GuiaPage';
+import { useSound } from './contexts/SoundContext';
 
 export default function App() {
   const { usuario, loading } = useAuth();
   const mascot = useMascot();
+  const sound = useSound();
   const [showWelcome, setShowWelcome] = useState(false);
 
   // Sessão já ativa ao abrir o app (localStorage já tinha usuário): mostra o
@@ -27,6 +29,12 @@ export default function App() {
     if (!showWelcome) mascot.show();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usuario]);
+  useEffect(() => {
+  if (usuario) sound.startAmbient();
+  else sound.stopAmbient();
+  return () => sound.stopAmbient();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [usuario]);
 
   return (
     <>

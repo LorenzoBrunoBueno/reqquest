@@ -65,3 +65,55 @@ export function gameOver(score) {
   if (good) [523, 659, 784].forEach((f, i) => tone(f, i * 0.12, 0.25, { type: 'triangle', gain: 0.14 }));
   else tone(330, 0, 0.4, { type: 'sine', gain: 0.12, glideTo: 220 });
 }
+
+// ---------------------------------------------------------------------
+// Música ambiente — loop suave gerado por código (mesma técnica das outras
+// funções, sem arquivo de áudio externo). Toca baixinho por trás de qualquer
+// tela do site, respeitando o botão de mutar (checa `enabled` a cada
+// compasso, então mutar corta o próximo em no máximo ~2.5s, sem cancelar nada).
+//
+// Progressão I-IV-V-vi em dó maior — a mesma "cara" alegre/aventura do resto
+// do jogo (o levelUp() logo acima já é um arpejo maior C-E-G-C ascendente).
+// Timbre 'triangle', igual aos outros efeitos, pra soar como parte do mesmo
+// universo sonoro em vez de uma trilha à parte tipo suspense/escape room.
+// ---------------------------------------------------------------------
+const AMBIENT_PROGRESSION = [
+  { bass: 130.81, arp: [261.63, 329.63, 392.00, 329.63] },  // C   (Dó maior)
+  { bass: 196.00, arp: [392.00, 493.88, 587.33, 493.88] },  // G   (Sol maior)
+  { bass: 110.00, arp: [440.00, 523.25, 659.25, 523.25] },  // Am  (Lá menor)
+  { bass: 174.61, arp: [349.23, 440.00, 523.25, 440.00] },  // F   (Fá maior)
+  { bass: 130.81, arp: [329.63, 392.00, 523.25, 392.00] },  // C   (variação)
+  { bass: 174.61, arp: [440.00, 523.25, 698.46, 523.25] },  // F   (variação, oitava acima)
+  { bass: 196.00, arp: [493.88, 587.33, 783.99, 587.33] },  // G   (variação, oitava acima)
+  { bass: 130.81, arp: [261.63, 329.63, 392.00, 523.25] },  // C   (fecha subindo até o C5)
+];
+const AMBIENT_STEP_SECONDS = 2.6;
+const AMBIENT_ARP_NOTE = AMBIENT_STEP_SECONDS / 4;
+let ambientTimer = null;
+let ambientOn = false;
+
+export function startAmbient() {
+  if (ambientOn) return;
+  ambientOn = true;
+  let step = 0;
+  const playStep = () => {
+    if (!ambientOn) return;
+    if (enabled) {
+      const chord = AMBIENT_PROGRESSION[step % AMBIENT_PROGRESSION.length];
+      tone(chord.bass, 0, AMBIENT_STEP_SECONDS - 0.15, { type: 'triangle', gain: 0.045 });
+      chord.arp.forEach((freq, i) => {
+        tone(freq, i * AMBIENT_ARP_NOTE, AMBIENT_ARP_NOTE * 0.9, {
+          type: 'triangle', gain: 0.06 - i * 0.006,
+        });
+      });
+    }
+    step++;
+    ambientTimer = setTimeout(playStep, AMBIENT_STEP_SECONDS * 1000);
+  };
+  playStep();
+}
+
+export function stopAmbient() {
+  ambientOn = false;
+  if (ambientTimer) { clearTimeout(ambientTimer); ambientTimer = null; }
+}

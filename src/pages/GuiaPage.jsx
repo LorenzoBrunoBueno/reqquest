@@ -66,6 +66,7 @@ export default function GuiaPage() {
       <div className="panel guia-intro-panel" style={{ marginBottom: 20 }}>
         <img className="guia-mascot-peek" src="/assets/mascot/reqi-debrucado-semfio.png" alt="Reqi apoiado no painel, acompanhando a explicação" />
         <h3>O que é um Requisito de Software?</h3>
+        <br></br>
         <p className="section-intro">Algo que um sistema precisa fazer, ou uma qualidade que ele precisa ter. É a base de tudo que você classifica no ReqQuest.</p>
       </div>
 

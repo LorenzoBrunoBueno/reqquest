@@ -23,6 +23,7 @@ export default function RelatoriosPage() {
     <>
       <div className="panel" style={{ marginBottom: 20 }}>
         <h3>Evolução de pontuação</h3>
+        <br></br>
         <p className="section-intro">Pontuação de cada partida jogada, em ordem cronológica.</p>
         <ScoreChart partidas={partidas} />
       </div>
@@ -30,6 +31,7 @@ export default function RelatoriosPage() {
       <div className="panel relatorios-conquistas-panel" style={{ marginBottom: 20 }}>
         <img className="relatorios-mascot-peek" src="/assets/mascot/reqi-debrucado-alt.png" alt="Reqi acompanhando suas conquistas" />
         <h3>Conquistas</h3>
+        <br></br>
         <p className="section-intro">{desbloqueadas} de {BADGES_LIST.length} conquistas desbloqueadas até agora.</p>
         <div className="badges-grid" id="rel-badges">
           {BADGES_LIST.map((b) => {

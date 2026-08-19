@@ -43,7 +43,7 @@ export default function GamePage() {
     mascot.say('Escolha um mundo pra começar sua missão!', 'neutro', 3500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+<br></br>
   // ---------------- timer do jogo (1s) ----------------
   useEffect(() => {
     if (state.screen !== 'playing') return;

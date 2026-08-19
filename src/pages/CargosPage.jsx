@@ -1,4 +1,5 @@
 import { usePlayerProgress } from '../contexts/PlayerProgressContext';
+import { useTemas } from '../hooks/useTemas';
 import { RANKS, XP_PER_LEVEL, powerupsForTier } from '../data/db';
 
 const POWERUP_LABEL = { dica: 'Dica', 'tempo-extra': 'Tempo Extra', pular: 'Pular' };
@@ -7,16 +8,18 @@ const POWERUP_CLS = { dica: 'pw-dica', 'tempo-extra': 'pw-tempo', pular: 'pw-pul
 
 export default function CargosPage() {
   const { level, xpIntoLevel, tier: tierAtual } = usePlayerProgress();
+  const { temas } = useTemas();
 
   return (
     <>
       <div className="panel cargos-intro-panel" style={{ marginBottom: 20 }}>
         <img className="cargos-mascot-sticker" src="/assets/mascot/reqi-cargos-peek.png" alt="Reqi apoiado no painel, acompanhando sua trilha de carreira" />
         <h3>Sua trilha de carreira</h3>
+        <br></br>
         <p className="section-intro">
-          Todos os mundos já estão liberados pra você jogar. Cada acerto rende XP e, a cada
-          {' '}{XP_PER_LEVEL} XP, você sobe de nível — ao atingir certos níveis, é promovido(a) de cargo
-          e ganha mais cargas de power-up pra usar nas partidas.
+          Cada acerto rende XP e, a cada {XP_PER_LEVEL} XP, você sobe de nível — ao atingir
+          certos níveis, é promovido(a) de cargo, ganha mais cargas de power-up e libera novos
+          mundos pra jogar.
         </p>
         <div className="cargo-current">
           <div className="cargo-current-value">{xpIntoLevel} / {XP_PER_LEVEL} XP no nível {level}</div>
@@ -29,6 +32,7 @@ export default function CargosPage() {
           const alcancado = tierAtual >= rank.tier;
           const atual = tierAtual === rank.tier;
           const powerups = powerupsForTier(rank.tier);
+          const mundosDoCargo = temas.filter((t) => (t.unlockTier || 1) === rank.tier);
           return (
             <div key={rank.tier} className={`cargo-card${alcancado ? ' reached' : ''}${atual ? ' current' : ''}`}>
               <div className="cargo-badge">{rank.tier}</div>
@@ -44,6 +48,16 @@ export default function CargosPage() {
                     </span>
                   ))}
                 </div>
+                {mundosDoCargo.length > 0 && (
+                  <div className="cargo-unlock-row">
+                    <span className="cargo-unlock-label">{rank.tier === 1 ? 'Mundos iniciais' : 'Libera'}</span>
+                    {mundosDoCargo.map((t) => (
+                      <span key={t.id} className={`cargo-unlock-chip${alcancado ? '' : ' locked'}`}>
+                        <img src={t.icone} alt="" />{t.nome}
+                      </span>
+                    ))}
+                  </div>
+                )}
                 {rank.tier === 5 && <div className="cargo-worlds-empty">No topo da carreira, sua reputação vira lenda na consultoria.</div>}
               </div>
             </div>

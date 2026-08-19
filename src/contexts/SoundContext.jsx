@@ -25,6 +25,8 @@ export function SoundProvider({ children }) {
     click: sound.click,
     countdown: sound.countdown,
     gameOver: sound.gameOver,
+    startAmbient: sound.startAmbient,
+    stopAmbient: sound.stopAmbient,
   }), [enabled]);
 
   return <SoundContext.Provider value={value}>{children}</SoundContext.Provider>;

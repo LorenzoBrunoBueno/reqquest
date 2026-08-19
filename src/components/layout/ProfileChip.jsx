@@ -59,8 +59,8 @@ export default function ProfileChip() {
             <div className="profile-info-row"><svg width="14" height="14"><use href="#ic-phone" /></svg><span id="profile-telefone">{usuario.telefone || '—'}</span></div>
             <div className="profile-info-row"><svg width="14" height="14"><use href="#ic-mail" /></svg><span id="profile-email">{usuario.email || '—'}</span></div>
           </div>
-          <button className="btn btn-danger btn-block" id="logout-btn" onClick={handleLogout}>
-            <svg width="15" height="15" style={{ verticalAlign: -3, marginRight: 6 }}><use href="#ic-logout" /></svg>Sair
+          <button className="profile-logout-btn" id="logout-btn" onClick={handleLogout}>
+            <svg width="14" height="14"><use href="#ic-logout" /></svg>Sair
           </button>
         </div>
       </div>
