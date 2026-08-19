@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTemas } from '../hooks/useTemas';
 import { useRequisitos } from '../hooks/useRequisitos';
+import { useAuth } from '../contexts/AuthContext';
 import { useSound } from '../contexts/SoundContext';
 import { useToast } from '../contexts/ToastContext';
 import { useModal } from '../contexts/ModalContext';
@@ -12,6 +13,7 @@ import TemaModalContent from '../features/crud/TemaModalContent';
 export default function RequisitosPage() {
   const { temas, addTema, updateTema, deleteTema } = useTemas();
   const { requisitos, addRequisito, updateRequisito, deleteRequisito } = useRequisitos();
+  const { isAdmin } = useAuth();
   const sound = useSound();
   const { showToast } = useToast();
   const { open } = useModal();
@@ -79,9 +81,11 @@ export default function RequisitosPage() {
           <button className={`btn ${tab === 'requisitos' ? 'btn-primary' : 'btn-secondary'} btn-sm`} onClick={() => setTab('requisitos')}>Requisitos</button>
           <button className={`btn ${tab === 'temas' ? 'btn-primary' : 'btn-secondary'} btn-sm`} onClick={() => setTab('temas')}>Mundos</button>
         </div>
-        <button className="btn btn-primary" onClick={tab === 'requisitos' ? openNovoRequisito : openNovoTema}>
-          + Novo {tab === 'requisitos' ? 'Requisito' : 'Mundo'}
-        </button>
+        {isAdmin && (
+          <button className="btn btn-primary" onClick={tab === 'requisitos' ? openNovoRequisito : openNovoTema}>
+            + Novo {tab === 'requisitos' ? 'Requisito' : 'Mundo'}
+          </button>
+        )}
       </div>
 
       {tab === 'requisitos' ? (
@@ -120,8 +124,12 @@ export default function RequisitosPage() {
                       </span>
                     </td>
                     <td className="row-actions">
-                      <button className="btn btn-secondary btn-sm" onClick={() => openEditarRequisito(r)}>Editar</button>
-                      <button className="btn btn-danger btn-sm" onClick={() => handleDeleteRequisito(r.id)}>Excluir</button>
+                      {isAdmin && (
+                        <>
+                          <button className="btn btn-secondary btn-sm" onClick={() => openEditarRequisito(r)}>Editar</button>
+                          <button className="btn btn-danger btn-sm" onClick={() => handleDeleteRequisito(r.id)}>Excluir</button>
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -159,8 +167,12 @@ export default function RequisitosPage() {
                     <td><span className="tier-pill"><span className="tier-num">{tier}</span>{rank ? rank.title.split(' ')[0] : '—'}</span></td>
                     <td>{requisitos.filter((r) => r.temaId === t.id).length}</td>
                     <td className="row-actions">
-                      <button className="btn btn-secondary btn-sm" onClick={() => openEditarTema(t)}>Editar</button>
-                      <button className="btn btn-danger btn-sm" onClick={() => handleDeleteTema(t.id)}>Excluir</button>
+                      {isAdmin && (
+                        <>
+                          <button className="btn btn-secondary btn-sm" onClick={() => openEditarTema(t)}>Editar</button>
+                          <button className="btn btn-danger btn-sm" onClick={() => handleDeleteTema(t.id)}>Excluir</button>
+                        </>
+                      )}
                     </td>
                   </tr>
                 );

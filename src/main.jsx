@@ -14,17 +14,17 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <HashRouter>
       <ToastProvider>
-        <ModalProvider>
-          <SoundProvider>
-            <AuthProvider>
-              <PlayerProgressProvider>
-                <MascotProvider>
+        <SoundProvider>
+          <AuthProvider>
+            <PlayerProgressProvider>
+              <MascotProvider>
+                <ModalProvider>
                   <App />
-                </MascotProvider>
-              </PlayerProgressProvider>
-            </AuthProvider>
-          </SoundProvider>
-        </ModalProvider>
+                </ModalProvider>
+              </MascotProvider>
+            </PlayerProgressProvider>
+          </AuthProvider>
+        </SoundProvider>
       </ToastProvider>
     </HashRouter>
   </StrictMode>

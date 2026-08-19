@@ -15,13 +15,16 @@ export function AuthProvider({ children }) {
     authDb.fetchUsuarioAtual().then(setUsuario).finally(() => setLoading(false));
   }, []);
 
-  // Cada identidade (nome+telefone+email) agora é uma conta permanente no
-  // backend, com seu próprio progresso — não existe mais "resetar progresso
-  // porque é outra pessoa" no cliente (ver .claude/docs/integration-plan.md,
-  // §4.1): logar com uma identidade diferente simplesmente entra na conta
-  // dessa pessoa (nova ou já existente), sem afetar quem estava logado antes.
-  const login = useCallback(async (nome, telefone, email) => {
-    const novo = await authDb.login(nome, telefone, email);
+  const verificarEmail = useCallback((email) => authDb.verificarEmail(email), []);
+
+  const registrar = useCallback(async (nome, telefone, email, senha) => {
+    const novo = await authDb.registrar(nome, telefone, email, senha);
+    setUsuario(novo);
+    return novo;
+  }, []);
+
+  const login = useCallback(async (email, senha) => {
+    const novo = await authDb.login(email, senha);
     setUsuario(novo);
     return novo;
   }, []);
@@ -31,8 +34,12 @@ export function AuthProvider({ children }) {
     setUsuario(null);
   }, []);
 
+  const isAdmin = usuario?.role === 'ADM';
+
   return (
-    <AuthContext.Provider value={{ usuario, loading, login, logout, initials: authDb.initials }}>
+    <AuthContext.Provider
+      value={{ usuario, loading, isAdmin, verificarEmail, registrar, login, logout, initials: authDb.initials }}
+    >
       {children}
     </AuthContext.Provider>
   );
