@@ -1,9 +1,10 @@
 /**
- * auth.js — antes lia/gravava um objeto de usuário direto no localStorage;
- * agora guarda só o token JWT devolvido por POST /auth/login e busca os
- * dados do usuário no backend (GET /usuarios/me) quando precisa.
- * RF01 - Login (nome, telefone, e-mail) — identifica o jogador, sem senha.
- * RF02 - Exibição do nome do usuário logado + logout.
+ * auth.js — guarda só o token JWT devolvido por POST /auth/login ou
+ * /auth/registrar e busca os dados do usuário no backend (GET /usuarios/me)
+ * quando precisa.
+ * Login agora exige senha: a tela inicial (nome, telefone, e-mail) decide via
+ * verificarEmail() se abre o modal de "criar senha" (registrar) ou "digitar
+ * senha" (login) — ver LoginPage.jsx / SenhaModalContent.jsx.
  */
 import { apiFetch, setTokenGetter } from './apiClient';
 
@@ -30,8 +31,24 @@ export function initials(nome) {
   return (first + last).toUpperCase();
 }
 
-export async function login(nome, telefone, email) {
-  const data = await apiFetch('/auth/login', { method: 'POST', body: { nome, telefone, email } });
+/** Decide, depois do nome/telefone/email, se o modal deve pedir pra criar
+ * senha (primeiro acesso) ou digitar senha (email já cadastrado). */
+export async function verificarEmail(email) {
+  const data = await apiFetch('/auth/verificar-email', { method: 'POST', body: { email } });
+  return data.cadastrado;
+}
+
+export async function registrar(nome, telefone, email, senha) {
+  const data = await apiFetch('/auth/registrar', {
+    method: 'POST',
+    body: { nome, telefone, email, senha },
+  });
+  setToken(data.token);
+  return data.usuario;
+}
+
+export async function login(email, senha) {
+  const data = await apiFetch('/auth/login', { method: 'POST', body: { email, senha } });
   setToken(data.token);
   return data.usuario;
 }

@@ -1,7 +1,9 @@
 import { useRef, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useModal } from '../contexts/ModalContext';
 import { useSound } from '../contexts/SoundContext';
 import { useToast } from '../contexts/ToastContext';
+import SenhaModalContent from '../features/auth/SenhaModalContent';
 import { confetti } from '../lib/confetti';
 import { loginSchema } from '../lib/validation/loginSchema';
 
@@ -13,7 +15,8 @@ const FALAS = [
 ];
 
 export default function LoginPage({ onLoggedIn }) {
-  const { login } = useAuth();
+  const { verificarEmail } = useAuth();
+  const { open } = useModal();
   const sound = useSound();
   const { showToast } = useToast();
   const [bubble, setBubble] = useState(FALAS[0]);
@@ -42,10 +45,18 @@ export default function LoginPage({ onLoggedIn }) {
     }
 
     try {
-      await login(result.data.nome, result.data.telefone, result.data.email);
-      onLoggedIn();
+      const cadastrado = await verificarEmail(result.data.email);
+      open(
+        <SenhaModalContent
+          modo={cadastrado ? 'login' : 'registro'}
+          nome={result.data.nome}
+          telefone={result.data.telefone}
+          email={result.data.email}
+          onSuccess={onLoggedIn}
+        />
+      );
     } catch (err) {
-      showToast(err.message || 'Não foi possível entrar. Tente novamente.');
+      showToast(err.message || 'Não foi possível continuar. Tente novamente.');
     }
   }
 
