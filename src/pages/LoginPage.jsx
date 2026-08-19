@@ -5,7 +5,7 @@ import { useSound } from '../contexts/SoundContext';
 import { useToast } from '../contexts/ToastContext';
 import SenhaModalContent from '../features/auth/SenhaModalContent';
 import { confetti } from '../lib/confetti';
-import { loginSchema } from '../lib/validation/loginSchema';
+import { emailSchema, loginSchema } from '../lib/validation/loginSchema';
 
 const FALAS = [
   'Eu sou o Reqi! Bora começar sua jornada?',
@@ -37,6 +37,28 @@ export default function LoginPage({ onLoggedIn }) {
     const nome = form.nome.value.trim();
     const telefone = form.telefone.value.trim();
     const email = form.email.value.trim();
+
+    // Quem já tem conta não precisa redigitar nome/telefone — só o e-mail já
+    // basta pra decidir se pula direto pro modal de senha (login).
+    if (!nome && !telefone) {
+      const emailResult = emailSchema.safeParse(email);
+      if (!emailResult.success) {
+        showToast(emailResult.error.issues[0].message);
+        return;
+      }
+
+      try {
+        const cadastrado = await verificarEmail(emailResult.data);
+        if (!cadastrado) {
+          showToast('Conta não encontrada. Preencha nome e telefone pra criar seu cadastro.');
+          return;
+        }
+        open(<SenhaModalContent modo="login" email={emailResult.data} onSuccess={onLoggedIn} />);
+      } catch (err) {
+        showToast(err.message || 'Não foi possível continuar. Tente novamente.');
+      }
+      return;
+    }
 
     const result = loginSchema.safeParse({ nome, telefone, email });
     if (!result.success) {
@@ -102,14 +124,14 @@ export default function LoginPage({ onLoggedIn }) {
                 <label htmlFor="nome">Nome completo</label>
                 <div className="input-icon-wrap">
                   <svg width="16" height="16"><use href="#ic-user" /></svg>
-                  <input type="text" id="nome" name="nome" required placeholder="Seu nome completo" />
+                  <input type="text" id="nome" name="nome" placeholder="Seu nome completo" />
                 </div>
               </div>
               <div>
                 <label htmlFor="telefone">Telefone</label>
                 <div className="input-icon-wrap">
                   <svg width="16" height="16"><use href="#ic-phone" /></svg>
-                  <input type="tel" id="telefone" name="telefone" required placeholder="(00) 00000-0000" />
+                  <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000" />
                 </div>
               </div>
             </div>

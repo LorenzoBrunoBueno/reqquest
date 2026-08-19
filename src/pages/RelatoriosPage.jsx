@@ -1,13 +1,18 @@
 import { useMemo, useState } from 'react';
 import { useTemas } from '../hooks/useTemas';
 import { usePartidas } from '../hooks/usePartidas';
+import { useMinhasPartidas } from '../hooks/useMinhasPartidas';
 import { usePlayerProgress } from '../contexts/PlayerProgressContext';
+import { useAuth } from '../contexts/AuthContext';
 import { LIST as BADGES_LIST } from '../data/badges';
 import ScoreChart from '../features/relatorios/ScoreChart';
 
 export default function RelatoriosPage() {
   const { temas } = useTemas();
   const { partidas } = usePartidas();
+  const { isAdmin } = useAuth();
+  const { partidas: minhasPartidas } = useMinhasPartidas(!isAdmin);
+  const partidasGrafico = isAdmin ? partidas : minhasPartidas;
   const { progress } = usePlayerProgress();
   const [filtroTema, setFiltroTema] = useState('');
 
@@ -24,7 +29,7 @@ export default function RelatoriosPage() {
       <div className="panel" style={{ marginBottom: 20 }}>
         <h3>Evolução de pontuação</h3>
         <p className="section-intro">Pontuação de cada partida jogada, em ordem cronológica.</p>
-        <ScoreChart partidas={partidas} />
+        <ScoreChart partidas={partidasGrafico} />
       </div>
 
       <div className="panel relatorios-conquistas-panel" style={{ marginBottom: 20 }}>

@@ -120,6 +120,13 @@ export function deleteRequisito(id) {
 export function getPartidas() {
   return apiFetch('/partidas?orderBy=data&order=asc');
 }
+// Igual a getPartidas, mas escopado ao usuário logado — usado no gráfico de
+// evolução em Relatórios quando o usuário é um JOGADOR comum (ver
+// useMinhasPartidas), pra não misturar a pontuação de todo mundo na "sua"
+// evolução.
+export function getMinhasPartidas() {
+  return apiFetch('/usuarios/me/partidas?order=asc', { auth: true });
+}
 /**
  * Registra uma partida inteira numa só chamada: o backend calcula XP,
  * nível e badges novos numa transação e devolve tudo junto — substitui o
